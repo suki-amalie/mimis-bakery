@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mimi's Bakery</title>
+  <meta name="description" content="Mimi's Bakery — bánh quy, mứt, bánh táo và bánh flan homemade. Homemade cookies, jam, apple pie and flan.">
+  <meta name="theme-color" content="#FBE3D3">
+  <meta property="og:title" content="Mimi's Bakery">
+  <meta property="og:description" content="Bánh homemade, nướng bằng cả tình thương 🐾">
+  <meta property="og:image" content="images/mimi.jpg">
+  <link rel="icon" href="images/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Mimi's Bakery">
+      <img src="images/mimi.jpg" alt="" width="40" height="40">
+      <span>Mimi's Bakery</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="vi" aria-pressed="true">VI</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <span class="sprinkle s1" aria-hidden="true">🍪</span>
+      <span class="sprinkle s2" aria-hidden="true">🍎</span>
+      <span class="sprinkle s3" aria-hidden="true">🍯</span>
+      <span class="sprinkle s4" aria-hidden="true">🍮</span>
+      <span class="sprinkle s5" aria-hidden="true">🥧</span>
+
+      <button type="button" class="mimi" id="mimi" aria-label="Mimi">
+        <span class="mimi-ring" aria-hidden="true"></span>
+        <img src="images/mimi.jpg" alt="Mimi, a white cat with black patches wearing a green felt cone" width="220" height="220">
+        <span class="bubble" id="bubble" role="status" aria-live="polite"></span>
+      </button>
+
+      <h1 data-i18n="hero.title">Bánh homemade, nướng bằng cả tình thương</h1>
+      <p class="lead" data-i18n="hero.sub"></p>
+      <div class="cta">
+        <a class="btn primary" href="#menu" data-i18n="hero.cta">Xem bánh</a>
+        <a class="btn ghost" href="#about" data-i18n="hero.about">Về Mimi</a>
+      </div>
+      <p class="hint" data-i18n="hero.hint"></p>
+
+      <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,40 C180,90 360,0 540,30 C720,60 900,90 1080,45 C1260,0 1350,20 1440,40 L1440,80 L0,80 Z"></path>
+      </svg>
+    </section>
+
+    <!-- ===== Menu ===== -->
+    <section class="section" id="menu">
+      <h2 data-i18n="menu.title">Hôm nay có gì?</h2>
+      <p class="sub" data-i18n="menu.sub"></p>
+      <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- ===== Quiz ===== -->
+    <section class="section quiz-wrap" id="quiz">
+      <div class="quiz" id="quizBox">
+        <h2 data-i18n="quiz.title">Bạn là món bánh nào?</h2>
+        <p class="sub" data-i18n="quiz.sub"></p>
+        <button type="button" class="btn primary" id="quizStart" data-i18n="quiz.start">Bắt đầu nào</button>
+      </div>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section class="section about" id="about">
+      <figure class="about-photo">
+        <img src="images/mimi-full.jpg" alt="Mimi the cat sitting on a green and white tiled floor" loading="lazy" width="450" height="600">
+        <figcaption data-i18n="about.caption"></figcaption>
+      </figure>
+      <div class="about-text">
+        <h2 data-i18n="about.title">Về Mimi's Bakery</h2>
+        <p data-i18n="about.p1"></p>
+        <p data-i18n="about.p2"></p>
+        <p data-i18n="about.p3"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <img src="images/mimi.jpg" alt="" width="44" height="44">
+    <p data-i18n="footer"></p>
+  </footer>
+
+  <!-- ===== Product pop-up ===== -->
+  <dialog id="modal" aria-labelledby="mName">
+    <button type="button" class="modal-x" id="modalX" aria-label="Close">✕</button>
+    <div class="modal-photo"><img id="mImg" alt=""></div>
+    <div class="modal-body">
+      <span class="tag" id="mTag"></span>
+      <h3 id="mName"></h3>
+      <p id="mDesc"></p>
+      <p class="price" id="mPrice" hidden></p>
+      <button type="button" class="btn primary" id="modalClose" data-i18n="modal.close">Đóng</button>
+    </div>
+  </dialog>
+
+  <script src="products.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
