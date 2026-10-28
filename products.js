@@ -1,84 +1,103 @@
+
 /* ==========================================================================
-   MIMI'S BAKERY — nội dung của website / website content
-   --------------------------------------------------------------------------
-   Đây là file DUY NHẤT cần sửa khi muốn đổi bánh, mô tả hay lời giới thiệu.
-   This is the ONLY file you need to edit to change products or text.
+   MIMI'S BAKERY — Nội dung website
 
-   THÊM BÁNH MỚI / ADD A PRODUCT
-     1. Bỏ ảnh vào thư mục  images/   (nên < 150 KB, ảnh vuông hoặc dọc)
-     2. Copy nguyên một khối { ... } trong "products" bên dưới, dán thêm vào,
-        rồi đổi id, category, image, tên và mô tả.
-        (id: chữ thường, không dấu, dùng gạch ngang. VD: "banh-bong-lan")
+   THÊM SẢN PHẨM
+     1. Bỏ ảnh vào thư mục images/.
+     2. Sao chép một khối sản phẩm bên dưới và chỉnh sửa.
+     3. Đặt id bằng chữ thường, không dấu, dùng gạch ngang.
 
-   HẾT HÀNG / SOLD OUT:  đổi  available: true  →  available: false
-   ĐỔI GIÁ / PRICES:     thêm dòng  price: "90.000đ",  vào khối sản phẩm
-                         (để trống thì website không hiện giá)
-
-   Lưu ý: giữ nguyên dấu phẩy, dấu ngoặc kép và dấu ngoặc nhọn.
+   ĐỔI GIÁ
+     Sửa trường price của sản phẩm, ví dụ: price: "170.000đ".
    ========================================================================== */
 
 window.BAKERY = {
-
-  /* ---------- Nhóm bánh / categories (dùng cho các nút lọc) ---------- */
+  /* ---------- Danh mục sản phẩm ---------- */
   categories: [
-    { id: "all",     emoji: "🧺", vi: "Tất cả",       en: "All" },
-    { id: "cookies", emoji: "🍪", vi: "Bánh quy",     en: "Cookies" },
-    { id: "jams",    emoji: "🍯", vi: "Mứt & ngâm",   en: "Jams & preserves" },
-    { id: "pies",    emoji: "🥧", vi: "Bánh nướng",   en: "Pies" },
-    { id: "flan",    emoji: "🍮", vi: "Bánh flan",    en: "Flan" }
+    { id: "all", emoji: "🧺", vi: "Tất cả" },
+    { id: "cookies", emoji: "🍪", vi: "Bánh quy" },
+    { id: "jams", emoji: "🍯", vi: "Mứt" },
+    { id: "pies", emoji: "🥧", vi: "Bánh nướng" },
+    { id: "flan", emoji: "🍮", vi: "Bánh flan" }
   ],
 
-  /* ---------- Sản phẩm / products ---------- */
+  /* ---------- Sản phẩm ---------- */
   products: [
     {
       id: "cookies-assorted",
       category: "cookies",
-      image: "images/cookies-assorted.jpg",
+      image: "images/assorted cat cookies.jpeg",
       focus: "50% 50%",
-      available: true,
+      price: "220.000đ",
       vi: {
         name: "Bánh quy mix",
-        tag: "Hũ trái tim",
-        desc: "Bánh quy đủ hình đủ màu, đựng trong hũ thủy tinh hình trái tim xinh xắn. Một hũ là đủ cho cả buổi trà chiều, hoặc làm quà tặng cũng rất hợp."
-      },
-      en: {
-        name: "Assorted cookies",
-        tag: "Heart jar",
-        desc: "Cookies in all shapes and colours, packed in a cute heart-shaped glass jar. Perfect for an afternoon tea or as a little gift."
+        desc: "Hũ bánh quy kết hợp bốn vị vanilla, chocolate, matcha và strawberry - mỗi vị mang một hương vị riêng, thích hợp để thưởng thức cùng trà hoặc làm quà tặng."
+      }
+    },
+    {
+      id: "cookies-vanilla",
+      category: "cookies",
+      image: "images/vanilla cat cookies.jpeg",
+      focus: "50% 50%",
+      price: "180.000đ / hũ 220g",
+      vi: {
+        name: "Bánh quy vanilla",
+        desc: "Bánh quy vanilla thơm dịu, sử dụng bơ Emborg từ Bỉ và Organic Bourbon Vanilla Extract của Pháp."
+      }
+    },
+    {
+      id: "cookies-orange",
+      category: "cookies",
+      image: "images/orange cat cookies.jpeg",
+      focus: "50% 50%",
+      price: "200.000đ",
+      vi: {
+        name: "Bánh quy cam",
+        desc: "Làm từ vỏ cam tươi, bánh thơm mùi cam với vị chua ngọt nhẹ nhàng. Khi nướng, hương cam lan tỏa tươi mát, gợi nhớ đến mùi viên vitamin C sủi bọt."
+      }
+    },
+    {
+      id: "cookies-hojicha",
+      category: "cookies",
+      image: "images/cookies-hojicha.jpg",
+      focus: "50% 50%",
+      price: "200.000đ",
+      vi: {
+        name: "Bánh quy hojicha",
+        desc: "Bánh quy vị hojicha với hương trà rang đặc trưng, thích hợp để nhâm nhi cùng một tách trà."
+      }
+    },
+    {
+      id: "cookies-chocolate",
+      category: "cookies",
+      image: "images/chocolate cat cookies.jpeg",
+      focus: "50% 50%",
+      price: "210.000đ",
+      vi: {
+        name: "Bánh quy chocolate",
+        desc: "Bánh quy chocolate với hương vị cacao đậm đà, dành cho những ai yêu thích vị chocolate."
+      }
+    },
+    {
+      id: "cookies-matcha",
+      category: "cookies",
+      image: "images/matcha cat cookies.jpeg",
+      focus: "50% 50%",
+      price: "220.000đ",
+      vi: {
+        name: "Bánh quy matcha",
+        desc: "Bánh quy matcha với hương trà xanh đặc trưng, mang đến vị trà thanh nhẹ trong từng chiếc bánh."
       }
     },
     {
       id: "cookies-strawberry",
       category: "cookies",
-      image: "images/cookies-strawberry.jpg",
+      image: "images/strawberry cat cookies.jpeg",
       focus: "50% 50%",
-      available: true,
+      price: "240.000đ",
       vi: {
-        name: "Bánh quy dâu",
-        tag: "Vị dâu",
-        desc: "Bánh quy tròn nhỏ vị dâu, nhâm nhi lúc nào cũng thấy vui miệng. Đóng hũ trái tim, buộc dây gai và gắn thẻ Mimi."
-      },
-      en: {
-        name: "Strawberry cookies",
-        tag: "Strawberry",
-        desc: "Small round strawberry cookies that are easy to keep nibbling. Packed in a heart jar, tied with twine and tagged by Mimi."
-      }
-    },
-    {
-      id: "honey-kumquat",
-      category: "jams",
-      image: "images/honey-kumquat.jpg",
-      focus: "50% 50%",
-      available: true,
-      vi: {
-        name: "Quất ngâm mật ong",
-        tag: "Homemade",
-        desc: "Quất ngâm mật ong trong hũ thủy tinh gói giấy kraft. Pha với nước ấm là có ngay một ly thức uống thơm dịu."
-      },
-      en: {
-        name: "Honey kumquat",
-        tag: "Homemade",
-        desc: "Kumquats preserved in honey, in a glass jar wrapped in kraft paper. Stir into warm water for a soothing drink."
+        name: "Bánh quy strawberry",
+        desc: "Sử dụng bột dâu tây 100% từ dâu tây. Bánh có hương dâu tự nhiên và vị chua nhẹ đặc trưng của dâu."
       }
     },
     {
@@ -86,16 +105,20 @@ window.BAKERY = {
       category: "jams",
       image: "images/mut-tao.jpg",
       focus: "50% 45%",
-      available: true,
+      price: "170.000đ / hũ 500g",
       vi: {
         name: "Mứt táo",
-        tag: "Homemade",
-        desc: "Mứt táo làm thủ công, đựng trong hũ trong suốt nắp bạc. Ăn kèm trà nóng hay ngày Tết đều hợp."
-      },
-      en: {
-        name: "Apple jam (mứt táo)",
-        tag: "Homemade",
-        desc: "Handmade sweet apple preserve in a clear jar with a silver lid. Lovely with hot tea."
+        desc: "Mứt táo làm thủ công, hũ thủy tinh, ăn kèm bánh quy hoặc thưởng thức cùng trà nóng đều hợp."
+      }
+    },
+    {
+      id: "honey-kumquat",
+      category: "jams",
+      image: "images/honey kumquat.jpeg",
+      focus: "50% 50%",
+      vi: {
+        name: "Quất ngâm mật ong",
+        desc: "Quất ngâm mật ong trong hũ thủy tinh. Pha với nước ấm là có ngay một ly thức uống thơm dịu."
       }
     },
     {
@@ -103,16 +126,9 @@ window.BAKERY = {
       category: "pies",
       image: "images/apple-pie.jpg",
       focus: "50% 62%",
-      available: true,
       vi: {
         name: "Bánh táo nướng",
-        tag: "Nướng mới",
-        desc: "Bánh táo nướng vàng ruộm, viền bánh được ấn hoa văn tỉ mỉ, bên trong là nhân táo thơm."
-      },
-      en: {
-        name: "Apple pie",
-        tag: "Freshly baked",
-        desc: "Golden baked apple pies with hand-crimped edges and a fragrant apple filling."
+        desc: "Bánh táo nướng vàng ruộm, bên trong là nhân táo thơm."
       }
     },
     {
@@ -120,49 +136,35 @@ window.BAKERY = {
       category: "flan",
       image: "images/flan.jpg",
       focus: "50% 58%",
-      available: true,
       vi: {
         name: "Bánh flan",
-        tag: "Mềm mịn",
-        desc: "Bánh flan homemade mềm mịn, đựng trong cốc hồng xinh, có nắp đậy và muỗng đi kèm."
-      },
-      en: {
-        name: "Homemade flan",
-        tag: "Silky",
-        desc: "Smooth homemade flan in a pretty pink cup, with a lid and a little spoon."
+        desc: "Bánh flan nhà làm mềm mịn."
       }
     }
   ],
 
-  /* ---------- Chữ trên website / site text ---------- */
+  /* ---------- Nội dung website ---------- */
   ui: {
     vi: {
       "brand": "Mimi's Bakery",
+
       "hero.title": "Bánh homemade, nướng bằng cả tình thương",
       "hero.sub": "Bánh quy, mứt, bánh táo và bánh flan — làm tại nhà, đóng gói xinh xắn, canh gác bởi một bé mèo tên Mimi.",
       "hero.cta": "Xem bánh",
       "hero.about": "Về Mimi",
       "hero.hint": "Thử chạm vào Mimi xem 🐾",
 
-      "menu.title": "Hôm nay có gì?",
+      "menu.title": "Sản phẩm",
       "menu.sub": "Chạm vào món bánh để xem chi tiết.",
-      "menu.soldout": "Hết hàng",
-      "menu.empty": "Chưa có món nào ở mục này.",
+      "menu.empty": "Mục này chưa có sản phẩm.",
 
       "modal.close": "Đóng",
 
-      "quiz.title": "Bạn là món bánh nào?",
-      "quiz.sub": "Trả lời 3 câu hỏi nhỏ, Mimi sẽ chọn bánh hợp với bạn.",
-      "quiz.start": "Bắt đầu nào",
-      "quiz.again": "Chơi lại",
-      "quiz.see": "Xem",
-      "quiz.q": "Câu",
-
       "about.title": "Về Mimi's Bakery",
       "about.p1": "Mimi's Bakery là tiệm bánh nhỏ làm tại nhà. Mỗi mẻ bánh được làm từ tốn, đóng gói cẩn thận và gửi đến bạn với tất cả sự yêu thương.",
-      "about.p2": "Tiệm mang tên Mimi — chú mèo trắng đốm đen, linh vật đáng yêu của tiệm. Từ hũ bánh quy nhiều hình ngộ nghĩnh, mứt táo, bánh táo nướng vàng ruộm cho đến bánh flan mềm mịn, mọi thứ đều làm thủ công và đóng gói xinh xắn.",
-      "about.p3": "Hy vọng mỗi hũ bánh nhỏ sẽ mang đến cho bạn một chút ngọt ngào trong ngày. Cảm ơn bạn đã ghé thăm tiệm của Mimi!",
-      "about.caption": "Mimi — linh vật của tiệm 🐾",
+      "about.p2": "Tiệm mang tên Mimi - chú mèo trắng đốm đen, linh vật đáng yêu của tiệm. Từ những hũ bánh quy nhiều hương vị đến mứt táo, bánh táo nướng vàng ruộm và bánh flan mềm mịn, mỗi món đều được chăm chút và đóng gói cẩn thận.",
+      "about.p3": "Hy vọng mỗi món bánh nhỏ sẽ mang đến cho bạn một chút ngọt ngào trong ngày. Cảm ơn bạn đã ghé thăm tiệm của Mimi!",
+      "about.caption": "Mimi - linh vật của tiệm 🐾",
 
       "footer": "Làm với 🧡 tại nhà · Mimi's Bakery",
 
@@ -170,108 +172,9 @@ window.BAKERY = {
         "Meo~ 🐾",
         "Mimi duyệt bánh này nha!",
         "Cho Mimi xin một miếng nhé?",
-        "Gừ gừ… thơm quá đi",
+        "Bánh thơm quá đi",
         "Ghé xem bánh bên dưới nha!"
-      ],
-
-      "quiz.questions": [
-        { q: "Cuối tuần lý tưởng của bạn là…",
-          a: [
-            { t: "Nằm dài xem phim cùng gối ôm", to: "flan" },
-            { t: "Pha trà, tụ tập với hội bạn",  to: "cookies-assorted" },
-            { t: "Đi dạo công viên hóng gió",    to: "apple-pie" },
-            { t: "Mở nhạc, dọn nhà, nấu nướng",  to: "mut-tao" }
-          ] },
-        { q: "Bạn thích vị ngọt kiểu nào?",
-          a: [
-            { t: "Mềm mịn, tan trong miệng",    to: "flan" },
-            { t: "Giòn giòn, nhai vui miệng",   to: "cookies-assorted" },
-            { t: "Thơm ấm, vỏ bánh xốp",        to: "apple-pie" },
-            { t: "Dẻo dẻo, đậm đà",             to: "mut-tao" }
-          ] },
-        { q: "Chọn một người bạn đồng hành:",
-          a: [
-            { t: "Một chú mèo ngủ ngày",         to: "flan" },
-            { t: "Playlist yêu thích",           to: "cookies-assorted" },
-            { t: "Chiếc xe đạp cũ",              to: "apple-pie" },
-            { t: "Một cuốn sách hay",            to: "mut-tao" }
-          ] }
-      ],
-      "quiz.results": {
-        "flan":             "Bạn là Bánh flan! Dịu dàng, mềm mại, ai gặp cũng thấy dễ chịu.",
-        "cookies-assorted": "Bạn là Bánh quy! Vui vẻ, nhiều màu sắc, đi đâu cũng làm cả nhóm cười.",
-        "apple-pie":        "Bạn là Bánh táo! Ấm áp, chu đáo, mang lại cảm giác như về nhà.",
-        "mut-tao":          "Bạn là Mứt táo! Điềm đạm, ngọt ngào theo kiểu từ tốn và bền lâu."
-      }
-    },
-
-    en: {
-      "brand": "Mimi's Bakery",
-      "hero.title": "Homemade treats, baked with love",
-      "hero.sub": "Cookies, jam, apple pie and flan — made at home, packed with care, supervised by a cat named Mimi.",
-      "hero.cta": "See the treats",
-      "hero.about": "About Mimi",
-      "hero.hint": "Try tapping Mimi 🐾",
-
-      "menu.title": "What's baking today?",
-      "menu.sub": "Tap a treat to see the details.",
-      "menu.soldout": "Sold out",
-      "menu.empty": "Nothing here yet.",
-
-      "modal.close": "Close",
-
-      "quiz.title": "Which treat are you?",
-      "quiz.sub": "Answer 3 tiny questions and Mimi will pick your match.",
-      "quiz.start": "Let's go",
-      "quiz.again": "Play again",
-      "quiz.see": "See",
-      "quiz.q": "Question",
-
-      "about.title": "About Mimi's Bakery",
-      "about.p1": "Mimi's Bakery is a small home bakery. Every batch is made slowly, packed carefully and sent to you with lots of love.",
-      "about.p2": "The bakery is named after Mimi — a white cat with black patches and our adorable mascot. From jars of cookies in funny shapes, apple jam and golden apple pies to silky flan, everything is handmade and prettily packed.",
-      "about.p3": "We hope every little jar brings you a bit of sweetness today. Thank you for visiting Mimi's bakery!",
-      "about.caption": "Mimi — our mascot 🐾",
-
-      "footer": "Made with 🧡 at home · Mimi's Bakery",
-
-      "mimi.say": [
-        "Meow~ 🐾",
-        "Mimi approves this treat!",
-        "Can Mimi have a bite?",
-        "Purr… smells so good",
-        "Check out the treats below!"
-      ],
-
-      "quiz.questions": [
-        { q: "Your perfect weekend is…",
-          a: [
-            { t: "Movie marathon with a big pillow", to: "flan" },
-            { t: "Tea and a gossip with friends",    to: "cookies-assorted" },
-            { t: "A stroll in the park",             to: "apple-pie" },
-            { t: "Music on, cleaning and cooking",   to: "mut-tao" }
-          ] },
-        { q: "What kind of sweet do you like?",
-          a: [
-            { t: "Smooth, melts in your mouth", to: "flan" },
-            { t: "Crunchy and fun to nibble",   to: "cookies-assorted" },
-            { t: "Warm, with flaky pastry",     to: "apple-pie" },
-            { t: "Chewy and rich",              to: "mut-tao" }
-          ] },
-        { q: "Pick a travel buddy:",
-          a: [
-            { t: "A sleepy cat",        to: "flan" },
-            { t: "Favourite playlist",  to: "cookies-assorted" },
-            { t: "An old bicycle",      to: "apple-pie" },
-            { t: "A good book",         to: "mut-tao" }
-          ] }
-      ],
-      "quiz.results": {
-        "flan":             "You're Flan! Gentle, soft and easy to be around.",
-        "cookies-assorted": "You're Cookies! Cheerful and colourful — you make the whole group laugh.",
-        "apple-pie":        "You're Apple Pie! Warm and caring, you feel like coming home.",
-        "mut-tao":          "You're Apple Jam! Calm and sweet in a slow, lasting way."
-      }
+      ]
     }
   }
 };

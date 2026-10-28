@@ -1,233 +1,263 @@
-/* Mimi's Bakery — logic của website. Không cần sửa file này khi thêm bánh;
-   chỉ cần sửa products.js. */
+
+/* Mimi's Bakery — website interactions */
 (function () {
   'use strict';
 
   var D = window.BAKERY;
-  var $ = function (s, r) { return (r || document).querySelector(s); };
-  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var $ = function (s, r) {
+    return (r || document).querySelector(s);
+  };
 
-  var lang = 'vi';
-  try { lang = localStorage.getItem('mimi-lang') || 'vi'; } catch (e) {}
-  if (!D.ui[lang]) lang = 'vi';
   var filter = 'all';
 
-  function t(key) { return D.ui[lang][key]; }
-  function byId(id) { return D.products.filter(function (p) { return p.id === id; })[0]; }
   function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text != null) node.textContent = text;
+    return node;
   }
 
-  /* ---------- language ---------- */
-  function applyLang() {
-    document.documentElement.lang = lang;
-    $$('[data-i18n]').forEach(function (n) {
-      var v = t(n.getAttribute('data-i18n'));
-      if (typeof v === 'string') n.textContent = v;
+  function byId(id) {
+    return D.products.find(function (p) {
+      return p.id === id;
     });
-    $$('.lang button').forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
-    });
-    renderChips();
-    renderGrid();
-    renderQuiz();
-    var open = $('#modal');
-    if (open.open && open.dataset.id) fillModal(byId(open.dataset.id));
   }
-  $$('.lang button').forEach(function (b) {
-    b.addEventListener('click', function () {
-      lang = b.getAttribute('data-lang');
-      try { localStorage.setItem('mimi-lang', lang); } catch (e) {}
-      applyLang();
-    });
-  });
 
-  /* ---------- menu ---------- */
+  /* ---------- Website text ---------- */
+  function renderText() {
+    var text = D.ui.vi;
+
+    document.querySelectorAll('[data-i18n]').forEach(function (node) {
+      var key = node.getAttribute('data-i18n');
+
+      if (Object.prototype.hasOwnProperty.call(text, key)) {
+        node.textContent = text[key];
+      }
+    });
+  }
+
+  /* ---------- Product categories ---------- */
   function renderChips() {
     var box = $('#chips');
     box.textContent = '';
-    D.categories.forEach(function (c) {
-      var b = el('button', 'chip', c.emoji + ' ' + c[lang]);
-      b.type = 'button';
-      b.setAttribute('role', 'tab');
-      b.setAttribute('aria-selected', String(c.id === filter));
-      b.addEventListener('click', function () { filter = c.id; renderChips(); renderGrid(); });
-      box.appendChild(b);
+
+    D.categories.forEach(function (category) {
+      var button = el(
+        'button',
+        'chip',
+        category.emoji + ' ' + category.vi
+      );
+
+      button.type = 'button';
+      button.setAttribute(
+        'aria-selected',
+        String(category.id === filter)
+      );
+
+      button.addEventListener('click', function () {
+        filter = category.id;
+        renderChips();
+        renderGrid();
+      });
+
+      box.appendChild(button);
     });
   }
 
+  /* ---------- Product grid ---------- */
   function renderGrid() {
     var grid = $('#grid');
     grid.textContent = '';
-    var list = D.products.filter(function (p) { return filter === 'all' || p.category === filter; });
-    if (!list.length) { grid.appendChild(el('p', 'empty', t('menu.empty'))); return; }
-    list.forEach(function (p, i) {
-      var c = el('button', 'card' + (p.available === false ? ' soldout' : ''));
-      c.type = 'button';
-      c.style.animationDelay = (i * 60) + 'ms';
-      var ph = el('div', 'card-photo');
+
+    var products = D.products.filter(function (p) {
+      return filter === 'all' || p.category === filter;
+    });
+
+    if (!products.length) {
+      grid.appendChild(
+        el('p', 'empty', D.ui.vi['menu.empty'])
+      );
+      return;
+    }
+
+    products.forEach(function (p, i) {
+      var card = el('button', 'card');
+      card.type = 'button';
+      card.style.animationDelay = (i * 60) + 'ms';
+
+      var photo = el('div', 'card-photo');
       var img = el('img');
-      img.src = p.image; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+
+      img.src = p.image;
+      img.alt = p.vi.name;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+
       if (p.focus) img.style.objectPosition = p.focus;
-      ph.appendChild(img);
-      c.appendChild(ph);
-      if (p.available === false) c.appendChild(el('span', 'badge', t('menu.soldout')));
+
+      photo.appendChild(img);
+      card.appendChild(photo);
+
       var body = el('div', 'card-body');
-      body.appendChild(el('h3', null, p[lang].name));
-      if (p[lang].tag) body.appendChild(el('span', 'card-tag', p[lang].tag));
-      c.appendChild(body);
-      c.addEventListener('click', function () { openModal(p.id); });
-      grid.appendChild(c);
+      body.appendChild(el('h3', null, p.vi.name));
+
+      card.appendChild(body);
+
+      card.addEventListener('click', function () {
+        openModal(p.id);
+      });
+
+      grid.appendChild(card);
     });
   }
 
-  /* ---------- pop-up (also what a product QR code opens: ?p=<id>) ---------- */
+  /* ---------- Product pop-up ---------- */
   var modal = $('#modal');
+
   function fillModal(p) {
     if (!p) return;
+
     modal.dataset.id = p.id;
+
     var img = $('#mImg');
-    img.src = p.image; img.alt = p[lang].name;
-    if (p.focus) img.style.objectPosition = p.focus;
-    $('#mTag').textContent = p[lang].tag || '';
-    $('#mTag').hidden = !p[lang].tag;
-    $('#mName').textContent = p[lang].name;
-    $('#mDesc').textContent = p[lang].desc;
+    img.src = p.image;
+    img.alt = p.vi.name;
+
+    if (p.focus) {
+      img.style.objectPosition = p.focus;
+    } else {
+      img.style.objectPosition = '';
+    }
+
+    $('#mName').textContent = p.vi.name;
+    $('#mDesc').textContent = p.vi.desc;
+
     var price = $('#mPrice');
     price.hidden = !p.price;
     price.textContent = p.price || '';
   }
+
   function openModal(id) {
     var p = byId(id);
     if (!p) return;
+
     fillModal(p);
-    if (!modal.open) { if (modal.showModal) modal.showModal(); else modal.setAttribute('open', ''); }
-    try { history.replaceState(null, '', '?p=' + encodeURIComponent(id)); } catch (e) {}
+
+    if (!modal.open) {
+      modal.showModal();
+    }
   }
+
   function closeModal() {
-    if (modal.close) modal.close(); else modal.removeAttribute('open');
+    if (modal.open) modal.close();
   }
-  modal.addEventListener('close', function () {
-    try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
-  });
+
   $('#modalX').addEventListener('click', closeModal);
   $('#modalClose').addEventListener('click', closeModal);
-  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
-  /* ---------- quiz ---------- */
-  var quiz = { step: -1, score: {}, order: [] };
-
-  function renderQuiz() {
-    var box = $('#quizBox');
-    var qs = t('quiz.questions');
-    box.textContent = '';
-
-    if (quiz.step < 0) {                       // intro
-      box.appendChild(el('h2', null, t('quiz.title')));
-      box.appendChild(el('p', 'sub', t('quiz.sub')));
-      var go = el('button', 'btn primary', t('quiz.start'));
-      go.type = 'button';
-      go.addEventListener('click', function () { quiz = { step: 0, score: {}, order: [] }; renderQuiz(); });
-      box.appendChild(go);
-      return;
-    }
-
-    if (quiz.step < qs.length) {               // a question
-      var prog = el('div', 'quiz-progress');
-      qs.forEach(function (_, i) { prog.appendChild(el('i', i <= quiz.step ? 'on' : '')); });
-      box.appendChild(prog);
-      var q = qs[quiz.step];
-      box.appendChild(el('p', 'quiz-q', q.q));
-      var list = el('div', 'answers');
-      q.a.forEach(function (a) {
-        var b = el('button', 'answer', a.t);
-        b.type = 'button';
-        b.addEventListener('click', function () {
-          if (!(a.to in quiz.score)) { quiz.score[a.to] = 0; quiz.order.push(a.to); }
-          quiz.score[a.to] += 1;
-          quiz.step += 1;
-          renderQuiz();
-        });
-        list.appendChild(b);
-      });
-      box.appendChild(list);
-      return;
-    }
-
-    // result: highest score wins, ties go to the earliest answer
-    var best = quiz.order[0];
-    quiz.order.forEach(function (id) { if (quiz.score[id] > quiz.score[best]) best = id; });
-    var p = byId(best);
-    var img = el('img', 'result-img');
-    img.src = p.image; img.alt = '';
-    if (p.focus) img.style.objectPosition = p.focus;
-    box.appendChild(img);
-    box.appendChild(el('p', 'result-text', t('quiz.results')[best]));
-    var row = el('div', 'cta');
-    var see = el('button', 'btn primary', t('quiz.see') + ' ' + p[lang].name);
-    see.type = 'button';
-    see.addEventListener('click', function () { openModal(best); });
-    var again = el('button', 'btn ghost', t('quiz.again'));
-    again.type = 'button';
-    again.addEventListener('click', function () { quiz = { step: -1, score: {}, order: [] }; renderQuiz(); });
-    row.appendChild(see); row.appendChild(again);
-    box.appendChild(row);
-    paws(14);
-  }
-
-  /* ---------- Mimi the mascot ---------- */
-  var mimi = $('#mimi'), bubble = $('#bubble'), taps = 0, sayIdx = 0, hideTimer;
-  mimi.addEventListener('click', function () {
-    var lines = t('mimi.say');
-    bubble.textContent = lines[sayIdx % lines.length];
-    sayIdx += 1;
-    bubble.classList.add('show');
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(function () { bubble.classList.remove('show'); }, 2200);
-    mimi.classList.remove('wiggle'); void mimi.offsetWidth; mimi.classList.add('wiggle');
-    mimi.addEventListener('animationend', function done(e) {
-      if (e.target !== mimi) return;
-      mimi.classList.remove('wiggle');           // go back to gently bobbing
-      mimi.removeEventListener('animationend', done);
-    });
-    taps += 1;
-    if (taps % 7 === 0) paws(24);              // surprise after 7 taps
+  modal.addEventListener('click', function (event) {
+    if (event.target === modal) closeModal();
   });
 
-  function paws(n) {
-    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    for (var i = 0; i < n; i++) {
-      var p = el('span', 'paw', '🐾');
-      p.style.left = Math.random() * 100 + 'vw';
-      p.style.animationDuration = (2 + Math.random() * 2) + 's';
-      p.style.animationDelay = (Math.random() * 0.6) + 's';
-      p.style.fontSize = (1.1 + Math.random() * 1.2) + 'rem';
-      document.body.appendChild(p);
-      setTimeout(function (n) { return function () { n.remove(); }; }(p), 4800);
+  /* ---------- Pet Mimi ---------- */
+  var mimi = $('#mimi');
+  var bubble = $('#bubble');
+  var taps = 0;
+  var sayIndex = 0;
+  var hideTimer;
+
+  var mimiLines = D.ui.vi['mimi.say'];
+
+  mimi.addEventListener('click', function () {
+    bubble.textContent =
+      mimiLines[sayIndex % mimiLines.length];
+
+    sayIndex++;
+
+    bubble.classList.add('show');
+
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () {
+      bubble.classList.remove('show');
+    }, 2500);
+
+    mimi.classList.remove('petted');
+    void mimi.offsetWidth;
+    mimi.classList.add('petted');
+
+    taps++;
+
+    if (taps % 7 === 0) makePaws(12);
+  });
+
+  mimi.addEventListener('animationend', function (event) {
+    if (event.animationName === 'pet-wiggle') {
+      mimi.classList.remove('petted');
+    }
+  });
+
+  /* ---------- Occasional paw prints ---------- */
+  function makePaws(count) {
+    if (
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
+
+    for (var i = 0; i < count; i++) {
+      var paw = el('span', 'paw', '🐾');
+
+      paw.style.left = Math.random() * 100 + 'vw';
+      paw.style.animationDuration =
+        (2 + Math.random() * 2) + 's';
+      paw.style.animationDelay =
+        Math.random() * 0.5 + 's';
+
+      document.body.appendChild(paw);
+
+      setTimeout(function (node) {
+        return function () {
+          node.remove();
+        };
+      }(paw), 4800);
     }
   }
 
-  /* ---------- reveal on scroll ---------- */
+  /* ---------- Reveal sections on scroll ---------- */
   function setupReveal() {
-    var targets = $$('.section, .footer');
-    targets.forEach(function (n) { n.classList.add('reveal'); });
-    if (!('IntersectionObserver' in window)) { targets.forEach(function (n) { n.classList.add('in'); }); return; }
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    var targets = Array.prototype.slice.call(
+      document.querySelectorAll('.section, .footer')
+    );
+
+    targets.forEach(function (node) {
+      node.classList.add('reveal');
+    });
+
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(function (node) {
+        node.classList.add('in');
+      });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          observer.unobserve(entry.target);
+        }
+      });
     }, { threshold: 0.12 });
-    targets.forEach(function (n) { io.observe(n); });
+
+    targets.forEach(function (node) {
+      observer.observe(node);
+    });
   }
 
-  /* ---------- start ---------- */
-  applyLang();
+  /* ---------- Start ---------- */
+  renderText();
+  renderChips();
+  renderGrid();
   setupReveal();
-  var wanted = new URLSearchParams(location.search).get('p');   // e.g. ?p=flan  (from a product QR code)
-  if (wanted && byId(wanted)) {
-    var m = $('#menu');
-    if (m) m.scrollIntoView();
-    openModal(wanted);
-  }
 })();
