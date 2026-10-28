@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Mimi's QR</title>
+  <link rel="icon" href="images/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: var(--peach); }
+    .qr-page { max-width: 560px; margin: 0 auto; padding: 28px 16px 60px; text-align: center; }
+    .qr-page h1 { font-size: 1.7rem; margin-bottom: 6px; }
+    .qr-card { background: var(--card); border-radius: 28px; box-shadow: var(--shadow); padding: 20px; margin-top: 20px; text-align: left; }
+    label { display: block; font-weight: 700; margin: 12px 0 4px; }
+    select, input[type=text] { width: 100%; padding: 10px 12px; border: 2px solid var(--peach-2); border-radius: 14px;
+                               font: inherit; background: #fff; color: var(--brown); }
+    .preview { margin: 22px auto 6px; width: min(100%, 420px); }
+    .preview canvas { width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 18px rgba(90,58,42,.25)); }
+    .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+    .note { font-size: .9rem; color: var(--brown-2); margin-top: 14px; }
+    .url-note { word-break: break-all; font-size: .85rem; color: var(--brown-2); text-align: center; }
+    @media print {
+      body { background: #fff; }
+      .qr-page > *:not(.print-me) { display: none !important; }
+      .qr-card { box-shadow: none; padding: 0; }
+      .qr-card > *:not(.preview) { display: none !important; }
+      .preview canvas { filter: none; width: 8cm; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="qr-page">
+  <h1>🐾 Mã QR / QR codes</h1>
+  <p class="sub">Tạo thẻ QR tròn cho từng sản phẩm. / Make a round QR tag for the shop or any product.</p>
+
+  <div class="qr-card print-me">
+    <label for="site">Địa chỉ website / Website address</label>
+    <input id="site" type="text" inputmode="url" autocomplete="off" spellcheck="false">
+
+    <label for="what">Mã QR dẫn tới / The QR opens</label>
+    <select id="what"></select>
+
+    <div class="preview"><canvas id="cv" width="900" height="900"></canvas></div>
+    <p class="url-note" id="finalUrl"></p>
+
+    <div class="actions">
+      <button type="button" class="btn primary" id="dl">⬇ PNG</button>
+      <button type="button" class="btn ghost" id="print">🖨 In / Print</button>
+    </div>
+    <p class="note">
+      Địa chỉ ở trên được điền tự động từ nơi bạn đang mở trang này. Hãy mở trang này từ
+      <b>địa chỉ website thật</b> (không phải file trên máy) rồi mới tải mã QR về in.<br>
+      The address above is filled in from where you opened this page — open it from the
+      <b>real website address</b> before you download and print.
+    </p>
+  </div>
+</div>
+
+<script src="vendor/qrcode.js"></script>
+<script src="products.js"></script>
+<script>
+(function () {
+  var D = window.BAKERY, $ = function (s) { return document.querySelector(s); };
+  var site = $('#site'), what = $('#what'), cv = $('#cv');
+
+  // Default: the folder this page lives in, i.e. the site's front page.
+  site.value = new URL('./', location.href).href;
+
+  var o = document.createElement('option');
+  o.value = ''; o.textContent = 'Trang chủ / Home page';
+  what.appendChild(o);
+  D.products.forEach(function (p) {
+    var x = document.createElement('option');
+    x.value = p.id; x.textContent = p.vi.name + ' / ' + p.en.name;
+    what.appendChild(x);
+  });
+
+  function targetUrl() {
+    var base = site.value.trim();
+    if (!base) return '';
+    if (!/^https?:\/\//i.test(base)) base = 'https://' + base;
+    if (!what.value) return base;
+    return base.replace(/[?#].*$/, '') + '?p=' + encodeURIComponent(what.value);
+  }
+
+  function roundRect(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+  }
+
+  function draw() {
+    var url = targetUrl();
+    $('#finalUrl').textContent = url;
+    var S = cv.width, c = cv.getContext('2d');
+    c.clearRect(0, 0, S, S);
+
+    // tag: cream disc with a thin brown rim, like the real kraft tags
+    c.fillStyle = '#F6F0E4';
+    c.beginPath(); c.arc(S / 2, S / 2, S / 2 - 6, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = '#8B6652'; c.lineWidth = 6; c.stroke();
+
+    // string hole
+    c.fillStyle = '#FFFFFF';
+    c.beginPath(); c.arc(S / 2, 70, 20, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = '#8B6652'; c.lineWidth = 4; c.stroke();
+
+    // text
+    c.textAlign = 'center'; c.fillStyle = '#3B2A20';
+    c.font = '500 54px Georgia, "Times New Roman", serif';
+    c.fillText("Mimi's Bakery", S / 2, 160);
+    var label = what.value ? D.products.filter(function (p) { return p.id === what.value; })[0].en.name : 'Quét để xem bánh';
+    c.font = '600 46px Fredoka, "Nunito", sans-serif';
+    c.fillText(label, S / 2, 226);
+
+    if (!url) return;
+
+    // QR (error correction M), on a white rounded plate so it scans well
+    var qr = qrcode(0, 'M');
+    qr.addData(url); qr.make();
+    var n = qr.getModuleCount(), quiet = 3;
+    var box = 480, cell = Math.floor(box / (n + quiet * 2));
+    var size = cell * (n + quiet * 2);
+    var x0 = Math.round((S - size) / 2), y0 = 270 + Math.round((S - 270 - 70 - size) / 2);
+    c.fillStyle = '#FFFFFF';
+    roundRect(c, x0, y0, size, size, 26); c.fill();
+    c.fillStyle = '#2B1D14';
+    for (var r = 0; r < n; r++) for (var k = 0; k < n; k++) {
+      if (qr.isDark(r, k)) c.fillRect(x0 + (k + quiet) * cell, y0 + (r + quiet) * cell, cell, cell);
+    }
+  }
+
+  function redraw() {
+    var f = document.fonts && document.fonts.load ? document.fonts.load('600 46px Fredoka') : Promise.resolve();
+    f.then(draw, draw);
+  }
+  site.addEventListener('input', redraw);
+  what.addEventListener('change', redraw);
+  redraw();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+
+  $('#dl').addEventListener('click', function () {
+    var a = document.createElement('a');
+    a.download = 'mimis-bakery-qr' + (what.value ? '-' + what.value : '') + '.png';
+    a.href = cv.toDataURL('image/png');
+    a.click();
+  });
+  $('#print').addEventListener('click', function () { window.print(); });
+})();
+</script>
+</body>
+</html>
